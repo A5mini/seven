@@ -20,7 +20,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-
         .fs-4 {
             color: black;
         }
@@ -113,6 +112,12 @@
 
         window.onload = function(){
             let memberIdPage = [];
+            let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
+            fetch(url).then(res => res.json()).then(data => {
+                let temp = data['temp'];
+                let msg = temp + " 도";
+                $('#cur').text(msg);
+            })
         }
 
         let memberIdPage = [];
@@ -149,13 +154,7 @@
             window.location.assign("teamIntro.html");
         })
 
-        let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
-            fetch(url).then(res => res.json()).then(data => {
-                let temp = data['temp'];
-                let msg = temp + " 도";
-                $('#cur').text(msg);
-            })
-    </script>
+     </script>
 
 </head>
 
