@@ -56,7 +56,7 @@
             width: 100%;
         }
 
-        .cardlink {
+        .xxlink {
             text-decoration-line: none;
             color: inherit;
         }
@@ -163,9 +163,9 @@
             let blog = row['blog'];
             let time = row['time'];
 
-            if (undefined==name) {
-                name="삭제라니";
-                comment ="내가 삭제라니"
+            if (undefined == name) {
+                name = "삭제라니";
+                comment = "내가 삭제라니"
             }
 
             let temp_html = `
@@ -173,16 +173,17 @@
                 <div>
                     <div class="row g-0" id="">
                         <div class="col-md-4">
-                            <img src="${image}"
-                                class="addimage"
-                                onerror="this.src='https:velog.velcdn.com/images/jeiho/profile/f8ca936e-20b4-477e-b863-9f4c3f58b5eb/social_profile.png'">
+                            <a href="${blog}">
+                                <img src="${image}"
+                                    class="addimage"
+                                    onerror="this.src='https:velog.velcdn.com/images/jeiho/profile/f8ca936e-20b4-477e-b863-9f4c3f58b5eb/social_profile.png'">
+                            </a>
                         </div>
                         <div class="col-md-8">
-
                             <div class="card-body" style="position: relative">
-                                <h5 class="card-title">${name}</h5> 
+                                <a class="xxlink" href="${blog}"><h5 class="card-title">${name}</h5></a>
 
-                                <p class="card-text">${comment}</p>
+                                <a class="xxlink" href="${blog}"><p class="card-text">${comment}</p></a>
                                 <p class="card-time" style="font-size: smaller; position: absolute; right: 10px;">${time}</p>
                                 <button type="button" class="delbtn" id="${i + 1}" style=" font-size: small; position: absolute; top: 10px; right: 10px;">삭제</button>
                             </div>
@@ -213,6 +214,10 @@
 
             var id_check = $(this).attr("id");
             var passORnot = prompt("게시물을 삭제하려면 비밀번호를 입력하세요:");
+            // 취소 버튼을 누른 경우 passORnot는 null
+            if (passORnot === null) {
+                return; // 아무 동작도 하지 않고 함수를 종료
+            }
 
             let docs = await getDocs(collection(db, "guest book"));
             docs.forEach((doc) => {
