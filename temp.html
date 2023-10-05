@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Firebase 구성 정보 설정
+    const firebaseConfig = {
+        apiKey: "AIzaSyBYK3xMsjQOT_Z1-Yf1tMTz6QtNzEejeQ4",
+        authDomain: "seven-14b85.firebaseapp.com",
+        projectId: "seven-14b85",
+        storageBucket: "seven-14b85.appspot.com",
+        messagingSenderId: "634437354299",
+        appId: "1:634437354299:web:054de790893f9f115a6d1e",
+        measurementId: "G-R52L74D772"
+    };
+
+    // Firebase 인스턴스 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let tmp_2 = "";
+    window.onload = function () {
+        let tmp = location.href.split('?')[1];
+        tmp_2 = tmp;
+        console.log(tmp);
+    }
+    let docs = await getDocs(collection(db, "members"));
+    docs.forEach((doc) => {
+        let members = doc.data();
+        if (members['memberid'] == tmp_2) {
+            console.log(members);
+        }
+    });
+
+</script>
+
+<body>
+    test
+    <p> test number</p>
+</body>
+
+</html>
