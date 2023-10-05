@@ -163,6 +163,11 @@
             let blog = row['blog'];
             let time = row['time'];
 
+            if (undefined==name) {
+                name="삭제라니";
+                comment ="내가 삭제라니"
+            }
+
             let temp_html = `
             <div class="cardform">
                 <div>
@@ -204,24 +209,46 @@
 
         $(".delbtn").click(async function () {
 
+            let temp = 0;
+
             var id_check = $(this).attr("id");
+            var passORnot = prompt("게시물을 삭제하려면 비밀번호를 입력하세요:");
 
-            const cityRef = doc(db, 'guest book', `${id_check}`);
-            await updateDoc(cityRef, {
-                blog: deleteField(),
-                comment: deleteField(),
-                image: deleteField(),
-                name: deleteField()
+            let docs = await getDocs(collection(db, "guest book"));
+            docs.forEach((doc) => {
 
-            });
+                let row = doc.data();
+                console.log(row);
 
-            console.log(i + "눌렸다");
+                let password = row['password'];
+                console.log(password);
 
-            window.location.reload();
-        })
+                let del = row['del'];
+
+                if (passORnot == password && del == `${id_check}`) {
+                    temp = 1;
+                }
+            })
+
+            if (temp == 1) {
+                const cityRef = doc(db, 'guest book', `${id_check}`);
+                await updateDoc(cityRef, {
+                    blog: deleteField(),
+                    comment: deleteField(),
+                    image: deleteField(),
+                    name: deleteField()
+                });
+
+                window.location.reload();
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        });
 
 
-        
+
+
+
 
 
     </script>
