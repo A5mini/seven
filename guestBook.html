@@ -14,7 +14,27 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
-        /*  글씨체 넣넣넣  */
+        @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+
+        .fs-4 {
+            color: black;
+        }
+
+        .nav-link {
+            color: black;
+        }
+
+        .seven {
+            color: black;
+            width: fit-content;
+            height: fit-content;
+            margin: 150px auto 50px auto;
+        }
 
         #whole {
             display: grid;
@@ -30,7 +50,7 @@
 
         .mypostingbox {
             width: 500px;
-            margin: 100px auto auto 100px;
+            margin: 20px auto 100px 100px;
 
             border: 1px solid black;
             padding: 20px;
@@ -114,8 +134,7 @@
         minute = minute >= 10 ? minute : "0" + minute; //minute 두자리로 출력
 
         //데이터 넣기
-
-        $("#savebtn").click(async function () {
+        $("#savebtn").click(async function () {                          //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)
 
             let image = $('#image').val();
             let name = $('#name').val();
@@ -136,13 +155,10 @@
                 'del': del
             };
 
-            // await addDoc(collection(db, "guest book"), doc)
-
-            await setDoc(doc(db, "guest book", `${del}`), data);
+            await setDoc(doc(db, "guest book", `${del}`), data);           //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)
 
 
-
-            alert('저장 완료!')
+            alert('등록 완료!')
 
             window.location.reload();
         })
@@ -164,8 +180,9 @@
             let time = row['time'];
 
             if (undefined == name) {
-                name = "삭제라니";
-                comment = "내가 삭제라니"
+                name = "삭제했지만";
+                comment = "당신의 발자취는 남았습니다..."
+                image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAe1BMVEX///8AAAD6+vrW1tbs7Ozv7+/a2tpvb2/MzMxERETj4+P39/fn5+eXl5c1NTVpaWlTU1OwsLB3d3e3t7eLi4vPz8/FxcWRkZFGRkaDg4OkpKQdHR0REREYGBhgYGDX19ckJCR2dnY8PDxaWlqgoKBOTk4qKiopKSm+vr58W10uAAAEhklEQVR4nO3b6XaqOhgG4IRBGRRFRUudq7W9/ys8BEhIGLTHYYe43ufPxrq71veuQEZKCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvJJr6a7gpYKxH0UL3VW8jjOjuUR3Ia/ibYqAdKW7khdZUu5TdymvEYiAdJD1N0MaObpLehI3/timISFDETByi7jRe/Sqcf7wTUhYNWFKwkt+8au7uGdIy1TBqEo44j+d6K7uCT7Fo1e1YUqS8uqgu7zHuSLWnhz4ZUim5dVad32Pi6XuM2lc0Y2ru8CHHXmWafZhsM4uttlIsXvHhMVUdBDb7B+f//Sd7tJ8cHftvZ01IfkSA6Pm8p7AKrsXNk0LV/kgOK06Ghrrru8JBhF73FhAm7fcOuQTVP895jS/83k2ZZtPRK9Kd2RcRB3oru1p4h1V2MTOFopsrvoe5rTuWHwRpNQP9Nb2DNauEZAO82+Kftb8R3HSDFgk/Kx6WaN5LQHzhPyLme4KH5W2JTxlX6z5iGF6f+O3JcwWiGKyE5mesLUNaUIW/HKnu8JH2a0JJ2TGL3u/O2yRYHFKve5ds3FbQp+s+GX/5zWDvM6fRWdG77RpRhzwrUUDulKxR9g9sAVJsjzvfuSEXtm20/4P+Na3qPr7eq8YDpWErG2/TFg9uVFV9vbGM7VTEvZcsC2Xr1IbUrZouCr663/Ub1T1EsrE+sbwLU4upv+kykeU2xDskEwd0tPrv1dtKPacmE57fLTgDvn2YOh07RLuT6yl+39AKiYkB0vpamhx1hL7NDp2pUiWXv9noq7Yn6fn+m16FjuIJ4N3e6VTJBoqn/Kln7he6i70brGU6FxbxY+ls2w6113pveT78iNU+5qlkn+ku9Q7KY2Wjd2L6pOvtvC37lLvpCRkI6BYyG8SNWH/B752SkI2PQnLn/h7UtseHeuu9T5pPWE2B5ht6LB470BZ1Z901nm/pJlQJi94fzSU9wTSiF/sfbq/GbEgmknffmgs8xFnKYNNrEWx93kZF9Mx+TY19QU2SxziZisoV5x30qhY9kmLeUP7UkIc/qxNLHWBmM9iQrEq7v1WYTf3yAJs59IrQeVjyebb4c7kgKMT3ayyGJa3ZBuIzoHWpOzO9FYf32Mzb1GniCGWDc3jz+xxNGELrROfz/Dd0WlLQkrX5p4KOiJE2YpfrQmzdjT1+Lo6hdgUK6OuhMa+KyNNSfOjavfSmdDM9a+y/8u6yvbDM6WVzRLKG2vsbHPZmY+3smEs+dCavXZ3upbwYuJu21EKsA2kV4Bb9f/8pWkl1Z8l/OwMlzNxO1H6qxB2lzambIqNkdM2aSUxrG0GN5i5/K0mNTRQVsItDP17EXGfxjd6UnPfWAvyJfw0ycaOa/l8Q1sw59iew96haEn4NRnmFoP+v2TxB2E938Q2cYy/ot6GN464DVRLaOauzHXyO0AmvL/1/3nvHlCe4bzfM1gqI26MHd1vW06ji78wcTX/d9abjYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD3yH/1zKR+x6SI9AAAAAElFTkSuQmCC"
             }
 
             let temp_html = `
@@ -176,7 +193,7 @@
                             <a href="${blog}">
                                 <img src="${image}"
                                     class="addimage"
-                                    onerror="this.src='https:velog.velcdn.com/images/jeiho/profile/f8ca936e-20b4-477e-b863-9f4c3f58b5eb/social_profile.png'">
+                                    onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm81P7TSBIArdAfY2iNZysOqa5FDoCqxG-IQ&usqp=CAU'">
                             </a>
                         </div>
                         <div class="col-md-8">
@@ -208,12 +225,13 @@
 
 
 
+        //삭제 버튼
         $(".delbtn").click(async function () {
 
             let temp = 0;
 
             var id_check = $(this).attr("id");
-            var passORnot = prompt("게시물을 삭제하려면 비밀번호를 입력하세요:");
+            var passORnot = prompt("방명록을 삭제하려면 비밀번호를 입력하세요:");
             // 취소 버튼을 누른 경우 passORnot는 null
             if (passORnot === null) {
                 return; // 아무 동작도 하지 않고 함수를 종료
@@ -252,7 +270,12 @@
 
 
 
-
+        let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
+        fetch(url).then(res => res.json()).then(data => {
+            let temp = data['temp'];
+            let msg = temp + " 도";
+            $('#cur').text(msg);
+        })
 
 
 
@@ -262,30 +285,24 @@
 
 <body>
 
-    <header class="p-3 text-bg-dark">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                        <use xlink:href="#bootstrap"></use>
-                    </svg>
-                </a>
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="index.html"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <span class="fs-4">SEVEN</span>
+            </a>
 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#홈으로 가는 링크" class="nav-link px-2 text-black-50"><span id="seven">Seven</span></a></li>
-                    <li><a href="#" class="nav-link px-2 text-black-50">방명록</a></li>
-
-                </ul>
-
-            </div>
-        </div>
-    </header>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link">오늘의 기온 : <span id="cur"></span></a></li>
+            </ul>
+        </header>
+    </div>
 
     <div id="whole">
         <div class="mypostingbox" id="postingbox">
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="image" placeholder="사진">
-                <label for="floatingInput">사진 url</label>
+                <label for="floatingInput">사진 URL</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="name" placeholder="이름">
@@ -293,11 +310,11 @@
             </div>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="comment" placeholder="인사말">
-                <label for="floatingInput">인사말, 의견</label>
+                <label for="floatingInput">인사말</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="blog" placeholder="블로그 url">
-                <label for="floatingInput">블로그 url</label>
+                <label for="floatingInput">블로그 URL</label>
             </div>
             <div class="form-floating mb-3" style="margin: auto; width: 50%;">
                 <input type="email" class="form-control" id="password" placeholder="비밀번호" style=" height: 50px;">
