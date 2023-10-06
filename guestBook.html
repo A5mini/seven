@@ -36,21 +36,24 @@
             margin: 150px auto 50px auto;
         }
 
-        #whole {
+        .gridbox1 {
             display: grid;
-            grid-gap: 100px;
-            grid-template-columns: repeat(3, minmax(auto, 1fr));
-            align-items: center;
-            justify-content: space-around;
+            grid-template-columns: 40% 60%;
         }
+
+        .gridbox2 {
+            display: grid;
+            grid-template-columns: 50% 50%;
+        }
+
 
         #seven {
             font-size: 50px;
         }
 
         .mypostingbox {
-            width: 500px;
-            margin: 20px auto 100px 100px;
+            width: 80%;
+            margin: auto;
 
             border: 1px solid black;
             padding: 20px;
@@ -58,25 +61,17 @@
         }
 
         .cardform {
-            width: 300px;
-            margin: 20px 30px 10px 10px;
+            width: 80%;
+            margin: 20px auto 20px auto;
 
             border: 1px solid black;
         }
-
-        /* 삭제 */
-        .text-bg-dark {
-            background-color: green;
-        }
-
-        /* 삭제 */
-
 
         .mypostingbox>button {
             width: 100%;
         }
 
-        .xxlink {
+        a {
             text-decoration-line: none;
             color: inherit;
         }
@@ -124,6 +119,7 @@
         var date = now.getDate();	// 일
         var hours = now.getHours();	// 시간
         var minute = now.getMinutes();	// 분
+        var seconds = now.getSeconds();	// 초
 
         // 날짜 원하는 형식 맞추기 (yyyy-mm-dd 형식)
         month = month >= 10 ? month : "0" + month; //month 두자리로 출력
@@ -132,9 +128,15 @@
         // 시간 원하는 형식 맞추기 (hh:mm 형식)
         hours = hours >= 10 ? hours : "0" + hours; //hour 두자리로 출력
         minute = minute >= 10 ? minute : "0" + minute; //minute 두자리로 출력
+        seconds = seconds >= 10 ? seconds : "0" + seconds; //minute 두자리로 출력
+
+        //시간으로 고유값을 만든다
+        var cardtime = year + month + date + hours + minute + seconds
+        console.log(cardtime);
+
 
         //데이터 넣기
-        $("#savebtn").click(async function () {                          //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)
+        $("#savebtn").click(async function () {                          //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)  --> cardtime 변경
 
             let image = $('#image').val();
             let name = $('#name').val();
@@ -143,8 +145,6 @@
             let password = $('#password').val();
             let time = `${year}-${month}-${date}  ${hours}:${minute}`;
 
-            let del = i + 1;
-
             let data = {
                 'image': image,
                 'name': name,
@@ -152,10 +152,10 @@
                 'blog': blog,
                 'time': time,
                 'password': password,
-                'del': del
+                'cardtime': cardtime
             };
 
-            await setDoc(doc(db, "guest book", `${del}`), data);           //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)
+            await setDoc(doc(db, "guest book", `${cardtime}`), data);           //firebase 저장 할 때 문서이름을 지정하기 위함  (${del}) --> (1,2,3,...)   --> cardtime로 변경
 
 
             alert('등록 완료!')
@@ -171,13 +171,14 @@
         let docs = await getDocs(collection(db, "guest book"));
         docs.forEach((doc) => {
             let row = doc.data();
-            console.log(row);                      //콘솔 창에서 어떤 데이터를 어떻게 가져오는지 확인 가능
+            // console.log(row);                      //콘솔 창에서 어떤 데이터를 어떻게 가져오는지 확인 가능
 
             let image = row['image'];
             let name = row['name'];
             let comment = row['comment'];
             let blog = row['blog'];
             let time = row['time'];
+            let del = row['cardtime'];
 
             if (undefined == name) {
                 name = "삭제했지만";
@@ -198,11 +199,11 @@
                         </div>
                         <div class="col-md-8">
                             <div class="card-body" style="position: relative">
-                                <a class="xxlink" href="${blog}"><h5 class="card-title">${name}</h5></a>
+                                <a href="${blog}"><h5 class="card-title">${name}</h5></a>
 
-                                <a class="xxlink" href="${blog}"><p class="card-text">${comment}</p></a>
+                                <a href="${blog}"><p class="card-text">${comment}</p></a>
                                 <p class="card-time" style="font-size: smaller; position: absolute; right: 10px;">${time}</p>
-                                <button type="button" class="delbtn" id="${i + 1}" style=" font-size: small; position: absolute; top: 10px; right: 10px;">삭제</button>
+                                <button type="button" class="delbtn" id="${del}" style=" font-size: small; position: absolute; top: 10px; right: 10px;">삭제</button>
                             </div>
                         </div>
                     </div>
@@ -240,29 +241,31 @@
             let docs = await getDocs(collection(db, "guest book"));
             docs.forEach((doc) => {
 
+                console.log("getDoc 들어옴");
+
                 let row = doc.data();
-                console.log(row);
+                // console.log(row);
 
                 let password = row['password'];
-                console.log(password);
+                // console.log(password);
 
-                let del = row['del'];
+                let cardtime = row['cardtime'];
+                // console.log(cardtime);
 
-                if (passORnot == password && del == `${id_check}`) {
+                if (passORnot == password && cardtime == `${id_check}`) {
                     temp = 1;
+                    console.log("temp1로 만들고 cardtime:", cardtime)
                 }
             })
 
             if (temp == 1) {
-                const cityRef = doc(db, 'guest book', `${id_check}`);
-                await updateDoc(cityRef, {
-                    blog: deleteField(),
-                    comment: deleteField(),
-                    image: deleteField(),
-                    name: deleteField()
-                });
+                console.log("temp==1");
+                console.log(`${id_check}`);
+
+                await deleteDoc(doc(db, "guest book", `${id_check}`));
 
                 window.location.reload();
+
             } else {
                 alert("비밀번호가 일치하지 않습니다.");
             }
@@ -298,26 +301,26 @@
         </header>
     </div>
 
-    <div id="whole">
+    <div class="gridbox1" style="">
         <div class="mypostingbox" id="postingbox">
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="image" placeholder="사진">
+                <input type="url" class="form-control" id="image" placeholder="사진">
                 <label for="floatingInput">사진 URL</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="name" placeholder="이름">
+                <input type="text" class="form-control" id="name" placeholder="이름">
                 <label for="floatingInput">이름</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="comment" placeholder="인사말">
+                <input type="text" class="form-control" id="comment" placeholder="인사말">
                 <label for="floatingInput">인사말</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="blog" placeholder="블로그 url">
+                <input type="url" class="form-control" id="blog" placeholder="블로그 url">
                 <label for="floatingInput">블로그 URL</label>
             </div>
             <div class="form-floating mb-3" style="margin: auto; width: 50%;">
-                <input type="email" class="form-control" id="password" placeholder="비밀번호" style=" height: 50px;">
+                <input type="password" class="form-control" id="password" placeholder="비밀번호" style=" height: 50px;">
                 <label for="floatingInput" style="margin: auto auto 100px auto;">비밀번호를 입력해주세요</label>
             </div>
 
@@ -325,16 +328,13 @@
 
         </div>
 
-        <!-- grid 2번째 줄 -->
-        <div class="card1 mb-3" style="max-width: 570px; border-color: transparent;">
+        <div class="gridbox2" style="overflow-x:hidden; width:100%; height:600px;" > 
+            <div class="card1 mb-3" style="max-width: 570px; border-color: transparent;">
+            </div>
 
+            <div class="card2 mb-3" style="max-width: 570px;border-color: transparent;">
+            </div>
         </div>
-
-        <!--grid 3번째 줄 -->
-        <div class="card2 mb-3" style="max-width: 570px;border-color: transparent;">
-
-        </div>
-
     </div>
 </body>
 
