@@ -4,14 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=s5k6y0ang8"></script>
 
     <title>SEVEN</title>
     <style>
@@ -37,6 +36,80 @@
             flex: 1;
         }
 
+        .seven {
+            color: black;
+            width: fit-content;
+            height: fit-content;
+            margin: 150px auto 50px auto;
+        }
+
+        .home_map {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .mapPointer {
+            width: 100px;
+            height: 100px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-con {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            height: 40%;
+            background: #fff;
+        }
+
+        .modal-con .title {
+            font-size: 20px;
+            padding: 20px;
+            background: black;
+            color: white;
+        }
+
+        .modal-con>p {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .modal-con .close {
+            display: block;
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid white;
+            text-align: center;
+            line-height: 28px;
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            right: 14px;
+            top: 17px;
+        }
+
+        .modal-con .map_wrap {
+            width: auto;
+            height: auto;
+        }
+
+
         .home_members {
             margin: 120px auto 20px auto;
             border: 1px solid black;
@@ -52,7 +125,7 @@
             margin-top: 30px;
         }
 
-        .card > img {
+        .card>img {
             height: 148px;
         }
 
@@ -60,15 +133,9 @@
             background-size: contain;
         }
 
-        .seven {
-            color: black;
-            width: fit-content;
-            height: fit-content;
-            margin: 150px auto 50px auto;
-        }
 
         .home_buttons {
-            height: 300px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -81,7 +148,7 @@
             color: white;
             background-color: black;
             border-radius: 5px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
     </style>
     <script type="module">
@@ -108,16 +175,6 @@
         const db = getFirestore(app);
 
 
-        window.onload = function(){
-            let memberIdPage = [];
-            let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
-            fetch(url).then(res => res.json()).then(data => {
-                let temp = data['temp'];
-                let msg = temp + " 도";
-                $('#cur').text(msg);
-            })
-        }
-
         let memberIdPage = [];
         let docs = await getDocs(collection(db, "members"));
         docs.forEach((doc) => {
@@ -132,27 +189,52 @@
                     <img src="${image}" id = "card${memberid}" class="card-img-top" alt="...">
                 </div>
             </div>`;
-        $('#cards').append(tmp_html);
+            $('#cards').append(tmp_html);
         });
+
+        // 네이버 지도 api
+        var mapOptions = {
+            center: new naver.maps.LatLng(37.5029381,127.0445834),
+            zoom: 15
+
+        };
+
+        var map = new naver.maps.Map('map', mapOptions);
+        var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(37.5023262,127.0444546),
+            map: map
+        });
+
+        $('#buttonModalOpen').click(async function () {
+            $('#modal').fadeIn(300)
+            $('#modal-main').fadeIn(300)
+        });
+
+        $('#buttonClose').click(async function () {
+            $('#modal').fadeOut(300)
+            $('#modal-main').fadeOut(300)
+        })
+
 
 
         // member Page 완성시 이용 가능 
         memberIdPage.forEach(e => {
-            $("#card" + e).click(async function(){
+            $("#card" + e).click(async function () {
                 location.href = `memberInfo.html?${e}`
                 window.location.href()
             })
         });
 
+
         $('#visiteBook').click(async function(){
             window.location.assign("guestBook.html");
         })
-        
-        $('#vistiteTeam').click(async function(){
+
+        $('#vistiteTeam').click(async function () {
             window.location.assign("teamIntro.html");
         })
 
-     </script>
+    </script>
 
 </head>
 
@@ -163,21 +245,32 @@
                 class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
                 <span class="fs-4">SEVEN</span>
             </a>
-
         </header>
+    </div>
+    <!-- 네이버 지도 api -->
+    <!-- <div id="map" style="width:100%;height:400px;"></div> -->
+    <div class="modal" id="modal">
+        <div id="modal-main" class="modal-con">
+            <a class="close" id="buttonClose">X</a>
+            <p class="title">위치</p>
+            <div class="map_wrap" id="map" style="width:500px; height:100%"> </div>
+        </div>
     </div>
     <div class="home_wrap">
         <div class="home_contents">
             <h1 class="seven"> SEVEN </h2>
+                <div class="home_map">
+                    <img class="mapPointer" id="buttonModalOpen" src="images/mapPointer.png" alt="pointer">
+                </div>
                 <div class="home_buttons">
-                    <button id = "visiteBook">방명록</button>
-                    <button id = "vistiteTeam">팀 설명</button>
+                    <button id="visiteBook">방명록</button>
+                    <button id="vistiteTeam">팀 설명</button>
                 </div>
         </div>
         <div class="home_members">
-            <div class="row row-cols-1 row-cols-md-2 g-4" id = "cards">
+            <div class="row row-cols-1 row-cols-md-2 g-4" id="cards">
+            </div>
         </div>
-    </div>
 </body>
 
 </html>
