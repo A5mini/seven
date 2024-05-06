@@ -2,8 +2,8 @@
 
 ## 프로젝트 소개
 SEVEN 팀원 4명을 상세하게 소개하는 웹 페이지입니다.
-- 시연 + 설명 영상 링크 : **https://youtu.be/Zyd58HrV_QU**
-- 사용 기술: **#HTML #JavaScript #CSS #Jquery #Firebase**
+- 시연 영상: **https://youtu.be/Zyd58HrV_QU**
+- 사용 기술: **#HTML #JavaScript #CSS #JQuery #Firebase**
 - GitHub: https://github.com/A5mini/seven.git
 
 - 팀 회의 노션: [프로젝트 소개, 설계 과정, 고민 및 해결 과정 수록](https://mint-manager-226.notion.site/S-A-A-5-467465114ac24d01ae7911e5f5bfb4f6?pvs=74)
